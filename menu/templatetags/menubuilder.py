@@ -1,29 +1,33 @@
-from menu.models import Menu, MenuItem
+from menus.models import Menu, MenuItem
 from django import template
 from django.core.cache import cache
 
 register = template.Library()
-
+# Main function to create the menu label, according templatetags
 def build_menu(parser, token):
     """
     {% menu menu_name %}
     """
+    # Error Handling  
     try:
+        # split_contents() knows not to split quoted strings.
         tag_name, menu_name = token.split_contents()
     except:
         raise template.TemplateSyntaxError, "%r tag requires exactly one argument" % token.contents.split()[0]
     return MenuObject(menu_name)
-
+# Class for construct menu
 class MenuObject(template.Node):
+    # Constructor MenuObject class
     def __init__(self, menu_name):
         self.menu_name = menu_name
-
+    # 
     def render(self, context):
         current_path = context['request'].path
         user = context['request'].user
         context['menuitems'] = get_items(self.menu_name, current_path, user)
         return ''
-  
+    
+# Main function to create the submenu label, according templatetags
 def build_sub_menu(parser, token):
     """
     {% submenu %}
@@ -31,6 +35,7 @@ def build_sub_menu(parser, token):
     return SubMenuObject()
 
 class SubMenuObject(template.Node):
+    # Constructor SubMenuObject class
     def __init__(self):
         pass
 
@@ -74,14 +79,22 @@ def get_items(menu_name, current_path, user):
         return []
 
     for i in MenuItem.objects.filter(menu=menu).order_by('order'):
-        current = ( i.link_url != '/' and current_path.startswith(i.link_url)) or ( i.link_url == '/' and current_path == '/' )
-        if menu.base_url and i.link_url == menu.base_url and current_path != i.link_url:
-            current = False
         show_anonymous = i.anonymous_only and user.is_anonymous()
         show_auth = i.login_required and user.is_authenticated()
         if (not (i.login_required or i.anonymous_only)) or (i.login_required and show_auth) or (i.anonymous_only and show_anonymous):
-            menuitems.append({'url': i.link_url, 'title': i.title, 'current': current,})
-
+        # Support flatpage
+            flag = 0
+            try:
+                i.flatpage.url==None
+            except AttributeError:
+                flag = 1
+            if(len(i.link_url)==0 and flag==1):return menuitems
+            elif(len(i.link_url)>0 and flag==1):
+                current = ( i.link_url != '/' and current_path.startswith(i.link_url) and current_path.endswith(i.link_url)) or ( i.link_url == '/' and current_path == '/' )
+                if menu.base_url and i.link_url == menu.base_url and current_path != i.link_url:current = False
+                menuitems.append({'url': '%s%s%s' %('/',i.link_url,'/'), 'title': i.title, 'current': current})
+            elif(len(i.link_url)==0 and flag==0 or len(i.link_url)>0 and flag==0):
+                menuitems.append({'url': i.flatpage.url, 'title': i.title, 'current': i.flatpage.url})            
     if cache_time >= 0 and not debug:
         cache.set(cache_key, menuitems, cache_time)
     return menuitems
