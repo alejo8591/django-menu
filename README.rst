@@ -63,7 +63,7 @@ will contain one dataset for each menu, authentication & path combination.
 Update (19th October, 2012):
 -------
 
-This version includes a field more in the ``model.py``, called ``flatpage``, 
+This version includes a field more in the ``models.py``, called ``flatpage``, 
 to support pages are built with this application or one that is
 created or optimized. It also updates the ``menubuilder.py`` to distinguish 
 the different states can have the application:
@@ -76,5 +76,5 @@ the different states can have the application:
 
 * Link URL = Value and Flatpage = Value
 
-In the last in that both have values, immediately takes the value of flatpage. 
+In the last in that both have values, immediately takes the value of ``Flatpage``. 
 This option is used to include different options to ``Flatpages`` as sample ``Forms``.
