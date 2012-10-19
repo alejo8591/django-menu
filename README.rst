@@ -59,3 +59,11 @@ Django Cache configuration.
 To enable caching to continue to let you make items available to anonymous or 
 authenticated users, and to enable the "Current Page" functionality, the cache
 will contain one dataset for each menu, authentication & path combination.
+
+Update:
+-------
+
+This version includes a field more in the model, called flatpage, 
+to support pages are built with this application or one that is
+created or optimized. It also updates the menubuilder.py to distinguish 
+the different states can have the application:
