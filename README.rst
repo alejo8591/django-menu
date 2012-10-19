@@ -68,18 +68,17 @@ to support pages are built with this application or one that is
 created or optimized. It also updates the menubuilder.py to distinguish 
 the different states can have the application:
 
-Item       Value  No Value
-Link URL     X       
-Flatpage             X
+Link URL     Value       
+Flatpage     No Value
 
-Link URL             X
-Flatpage    X          
+Link URL    No Value
+Flatpage    Value          
 
-Link URL             X
-Flatpage             X
+Link URL    No Value         
+Flatpage    No Value         
 
-Link URL     X       
-Flatpage     X 
+Link URL     Value      
+Flatpage     Value
 
 In the last in that both have values​​, immediately takes the value of flatpage. 
 This option is used to include different options to Flatpages as sample forms.
